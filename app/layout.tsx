@@ -9,9 +9,9 @@ export const metadata: Metadata = {
     google: '8Z9pHMUh0aZ14azZmPQCy8uq4thSdrAXUeAPmb1evr0',
   },
   icons: {
-    icon: '/your-logo.png',
-    shortcut: '/your-logo.png',
-    apple: '/your-logo.png',
+    icon: '/your-logo1.png',
+    shortcut: '/your-logo1.png',
+    apple: '/your-logo1.png',
   },
 }
 

@@ -6,9 +6,9 @@ export const metadata: Metadata = {
   description: 'Created with Next.js',
   generator: 'v0.dev',
   icons: {
-    icon: '/your-logo.png',
-    shortcut: '/your-logo.png',
-    apple: '/your-logo.png',
+    icon: '/your-logo1.png',
+    shortcut: '/your-logo1.png',
+    apple: '/your-logo1.png',
   },
 }
 

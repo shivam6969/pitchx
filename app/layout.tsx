@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   title: 'PitchX',
   description: 'Created with Next.js',
   generator: 'v0.dev',
+  icons: {
+    icon: '/your-logo.png',
+    shortcut: '/your-logo.png',
+    apple: '/your-logo.png',
+  },
 }
 
 export default function RootLayout({

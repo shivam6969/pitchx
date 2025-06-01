@@ -4,7 +4,7 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'PitchX',
   description: 'Created with Next.js',
-  generator: 'Dax',
+  generator: 'v0.dev',
 }
 
 export default function RootLayout({

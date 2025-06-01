@@ -5,10 +5,13 @@ export const metadata: Metadata = {
   title: 'PitchX',
   description: 'Created with Next.js',
   generator: 'v0.dev',
+  verification: {
+    google: '8Z9pHMUh0aZ14azZmPQCy8uq4thSdrAXUeAPmb1evr0',
+  },
   icons: {
-    icon: '/your-logo1.png',
-    shortcut: '/your-logo1.png',
-    apple: '/your-logo1.png',
+    icon: '/your-logo.png',
+    shortcut: '/your-logo.png',
+    apple: '/your-logo.png',
   },
 }
 

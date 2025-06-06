@@ -1,13 +1,16 @@
 'use client';
 
 import { useState } from "react"
-import { ArrowLeft, Building, MapPin, Clock, Briefcase, Code, Palette, Brain, TrendingUp, Upload, X, ChevronRight } from "lucide-react"
+import { ArrowLeft, Building, MapPin, Clock, Briefcase, Code, Palette, Brain, TrendingUp, Upload, X, ChevronRight, User, Mail, Phone, FileText, Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
 import Image from 'next/image'
 
@@ -27,11 +30,32 @@ type Job = {
   benefits: string[];
 };
 
+// Application form data type
+type ApplicationData = {
+  fullName: string;
+  email: string;
+  phone: string;
+  coverLetter: string;
+  resume: File | null;
+};
+
 export default function CareersPage() {
   // State for selected job and dialog visibility
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards'); // Changed from 'table' to 'cards'
+  const [isApplicationOpen, setIsApplicationOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+  
+  // Application form state
+  const [applicationData, setApplicationData] = useState<ApplicationData>({
+    fullName: '',
+    email: '',
+    phone: '',
+    coverLetter: '',
+    resume: null
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   // Job listings data
   // Update the job data with proper color mappings
@@ -101,7 +125,7 @@ export default function CareersPage() {
       ]
     },
     {
-      id: "uiux-designer",
+      id: "ui-ux-designer",
       title: "UI/UX Designer",
       department: "Design",
       departmentIcon: <Palette className="mr-1 h-3 w-3" />,
@@ -109,103 +133,160 @@ export default function CareersPage() {
       type: "Internship",
       compensation: "Unpaid",
       color: "pink",
-      description: "We're looking for a talented UI/UX Designer to create intuitive and engaging user experiences.",
+      description: "Join our design team to create intuitive and beautiful user experiences for our platform.",
       responsibilities: [
-        "Design user interfaces with Figma",
-        "Create wireframes, prototypes, and user flows",
-        "Collaborate with developers to implement designs",
+        "Design user interfaces and user experiences",
+        "Create wireframes, prototypes, and mockups",
         "Conduct user research and usability testing",
-        "Create visual design systems and style guides"
+        "Collaborate with developers to implement designs",
+        "Maintain design systems and style guides"
       ],
       requirements: [
-        "Knowledge of UI/UX design principles",
-        "Proficiency with Figma or similar design tools",
-        "Understanding of user-centered design processes",
-        "Basic knowledge of HTML and CSS",
-        "Strong visual design skills"
+        "Proficiency in design tools like Figma or Adobe XD",
+        "Understanding of user-centered design principles",
+        "Knowledge of web and mobile design best practices",
+        "Basic understanding of HTML/CSS",
+        "Strong portfolio showcasing design work"
       ],
       benefits: [
-        "Build a professional design portfolio",
-        "Work on real products with real users",
-        "Mentorship from experienced designers",
+        "Work on innovative design projects",
+        "Learn from experienced designers",
+        "Build a strong design portfolio",
         "Flexible work arrangements",
-        "Collaborative and supportive environment"
+        "Opportunity to shape product direction"
       ]
     },
     {
-      id: "aiml-engineer",
-      title: "AI/ML Engineer",
-      department: "Engineering",
+      id: "data-analyst",
+      title: "Data Analyst",
+      department: "Analytics",
+      departmentIcon: <TrendingUp className="mr-1 h-3 w-3" />,
+      location: "Remote",
+      type: "Internship",
+      compensation: "Unpaid",
+      color: "green",
+      description: "Help us make data-driven decisions by analyzing user behavior and platform performance.",
+      responsibilities: [
+        "Analyze user data and platform metrics",
+        "Create reports and dashboards",
+        "Identify trends and insights from data",
+        "Support business decision-making with data",
+        "Work with SQL and data visualization tools"
+      ],
+      requirements: [
+        "Knowledge of SQL and data analysis",
+        "Familiarity with data visualization tools",
+        "Understanding of statistical concepts",
+        "Experience with Excel or Google Sheets",
+        "Strong analytical and problem-solving skills"
+      ],
+      benefits: [
+        "Gain experience with real business data",
+        "Learn advanced analytics techniques",
+        "Work with modern data tools",
+        "Remote work flexibility",
+        "Mentorship from data professionals"
+      ]
+    },
+    {
+      id: "ai-researcher",
+      title: "AI/ML Researcher",
+      department: "Research",
       departmentIcon: <Brain className="mr-1 h-3 w-3" />,
       location: "Hybrid",
       type: "Internship",
       compensation: "Unpaid",
-      color: "green",
-      description: "We're seeking an AI/ML Engineer to develop intelligent features for our platform.",
-      responsibilities: [
-        "Implement machine learning models with Python",
-        "Develop algorithms for matching and recommendations",
-        "Integrate AI capabilities into our platform",
-        "Analyze and process data for model training",
-        "Evaluate and improve model performance"
-      ],
-      requirements: [
-        "Knowledge of Python and machine learning libraries",
-        "Understanding of basic ML algorithms and concepts",
-        "Familiarity with data processing techniques",
-        "Interest in AI/ML applications in business",
-        "Problem-solving mindset"
-      ],
-      benefits: [
-        "Work on cutting-edge AI technologies",
-        "Mentorship from experienced data scientists",
-        "Access to learning resources and training",
-        "Flexible work arrangements",
-        "Opportunity to make significant impact"
-      ]
-    },
-    {
-      id: "sales-marketing",
-      title: "Sales and Marketing Intern",
-      department: "Business",
-      departmentIcon: <TrendingUp className="mr-1 h-3 w-3" />,
-      location: "Hybrid",
-      type: "Internship",
-      compensation: "Unpaid",
       color: "orange",
-      description: "We're looking for a motivated Sales and Marketing Intern to help grow our user base.",
+      description: "Research and develop AI/ML solutions to enhance our platform's capabilities.",
       responsibilities: [
-        "Develop and execute marketing campaigns",
-        "Create content for social media and blog",
-        "Assist with outreach to potential clients",
-        "Analyze marketing metrics and performance",
-        "Support sales team with lead generation"
+        "Research AI/ML algorithms and techniques",
+        "Develop and test machine learning models",
+        "Analyze and preprocess data for ML applications",
+        "Collaborate on AI feature development",
+        "Stay updated with latest AI/ML trends"
       ],
       requirements: [
-        "Strong communication and writing skills",
-        "Basic understanding of digital marketing",
-        "Familiarity with social media platforms",
-        "Interest in B2B sales and marketing",
-        "Creative and analytical mindset"
+        "Knowledge of Python and ML libraries",
+        "Understanding of machine learning concepts",
+        "Familiarity with data science workflows",
+        "Experience with ML frameworks like TensorFlow or PyTorch",
+        "Strong mathematical and analytical skills"
       ],
       benefits: [
-        "Gain hands-on marketing experience",
-        "Develop business development skills",
-        "Work with experienced marketing professionals",
+        "Work on cutting-edge AI projects",
+        "Access to latest AI tools and technologies",
+        "Mentorship from AI experts",
         "Flexible work arrangements",
-        "Opportunity to see direct impact of your work"
+        "Opportunity to publish research"
       ]
     }
   ];
 
-  // Function to open job details dialog
+  // Handle job selection and dialog opening
+  const handleJobSelect = (job: Job) => {
+    setSelectedJob(job);
+    setIsDialogOpen(true);
+  };
+
+  // Add the missing openJobDetails function
   const openJobDetails = (job: Job) => {
     setSelectedJob(job);
     setIsDialogOpen(true);
   };
 
+  // Handle application form submission
+  const handleApplicationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Here you would typically send the data to your backend
+      console.log('Application submitted:', {
+        job: selectedJob?.title,
+        ...applicationData
+      });
+      
+      setSubmitSuccess(true);
+      
+      // Reset form after successful submission
+      setTimeout(() => {
+        setIsApplicationOpen(false);
+        setIsDialogOpen(false);
+        setSubmitSuccess(false);
+        setApplicationData({
+          fullName: '',
+          email: '',
+          phone: '',
+          coverLetter: '',
+          resume: null
+        });
+      }, 2000);
+    } catch (error) {
+      console.error('Error submitting application:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Handle file upload
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setApplicationData(prev => ({ ...prev, resume: file }));
+    }
+  };
+
+  // Handle apply now click
+  const handleApplyNow = () => {
+    setIsDialogOpen(false);
+    setIsApplicationOpen(true);
+  };
+
   return (
-    <div className="min-h-screen bg-black overflow-hidden relative">
+    <div className="min-h-screen bg-black text-white">
       {/* Animated Background - keeping existing code */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         {/* Animated gradient background */}
@@ -475,28 +556,28 @@ export default function CareersPage() {
       {/* Job Details Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         {selectedJob && (
-          <DialogContent className="bg-gradient-to-br from-black to-gray-900/90 backdrop-blur-xl border border-white/10 text-white max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-black/95 to-gray-900/95 backdrop-blur-xl border border-white/10 text-white">
             <DialogHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <Badge className={getColorClasses(selectedJob.color).badge}>
-                    {selectedJob.departmentIcon} {selectedJob.department}
-                  </Badge>
-                  <DialogTitle className="text-3xl font-bold bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
-                    {selectedJob.title}
-                  </DialogTitle>
-                </div>
-                <div className="flex space-x-2">
-                  <Badge variant="outline" className="bg-white/10 text-white/90 border-white/20">
-                    <MapPin className="mr-1 h-3 w-3" /> {selectedJob.location}
-                  </Badge>
-                  <Badge variant="outline" className="bg-white/10 text-white/90 border-white/20">
-                    <Clock className="mr-1 h-3 w-3" /> {selectedJob.type}
-                  </Badge>
-                  <Badge variant="outline" className="bg-white/10 text-white/90 border-white/20">
-                    <Briefcase className="mr-1 h-3 w-3" /> {selectedJob.compensation}
-                  </Badge>
-                </div>
+              <DialogTitle className="text-3xl font-bold text-white mb-2">
+                {selectedJob.title}
+              </DialogTitle>
+              <div className="flex flex-wrap items-center gap-4 mb-4">
+                <Badge className={`${getColorClasses(selectedJob.color).badge} px-3 py-1 text-sm font-medium`}>
+                  {selectedJob.departmentIcon}
+                  {selectedJob.department}
+                </Badge>
+                <Badge variant="outline" className="bg-white/5 text-white/80 border-white/20 px-3 py-1">
+                  <MapPin className="mr-1 h-3 w-3" />
+                  {selectedJob.location}
+                </Badge>
+                <Badge variant="outline" className="bg-white/5 text-white/80 border-white/20 px-3 py-1">
+                  <Clock className="mr-1 h-3 w-3" />
+                  {selectedJob.type}
+                </Badge>
+                <Badge variant="outline" className="bg-white/5 text-white/80 border-white/20 px-3 py-1">
+                  <Briefcase className="mr-1 h-3 w-3" />
+                  {selectedJob.compensation}
+                </Badge>
               </div>
               <DialogDescription className="text-white/80 mt-4 text-lg font-medium">
                 {selectedJob.description}
@@ -550,6 +631,7 @@ export default function CareersPage() {
                 Close
               </Button>
               <Button 
+                onClick={handleApplyNow}
                 className={`${getColorClasses(selectedJob.color).button} text-white px-8 font-semibold`}
               >
                 Apply Now
@@ -557,6 +639,156 @@ export default function CareersPage() {
             </DialogFooter>
           </DialogContent>
         )}
+      </Dialog>
+
+      {/* Application Form Dialog */}
+      <Dialog open={isApplicationOpen} onOpenChange={setIsApplicationOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-black/95 to-gray-900/95 backdrop-blur-xl border border-white/10 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-white mb-2">
+              Apply for {selectedJob?.title}
+            </DialogTitle>
+            <DialogDescription className="text-white/80">
+              Fill out the form below to submit your application. We'll review it and get back to you soon.
+            </DialogDescription>
+          </DialogHeader>
+
+          {submitSuccess ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Send className="h-8 w-8 text-green-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-green-400 mb-2">Application Submitted!</h3>
+              <p className="text-white/80">Thank you for your interest. We'll review your application and contact you soon.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleApplicationSubmit} className="space-y-6 mt-6">
+              {/* Personal Information */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-white mb-4">Personal Information</h3>
+                
+                <div>
+                  <Label htmlFor="fullName" className="text-white/90 mb-2 block">
+                    <User className="inline mr-2 h-4 w-4" />
+                    Full Name *
+                  </Label>
+                  <Input
+                    id="fullName"
+                    type="text"
+                    required
+                    value={applicationData.fullName}
+                    onChange={(e) => setApplicationData(prev => ({ ...prev, fullName: e.target.value }))}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-blue-400"
+                    placeholder="Enter your full name"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="email" className="text-white/90 mb-2 block">
+                    <Mail className="inline mr-2 h-4 w-4" />
+                    Email Address *
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    required
+                    value={applicationData.email}
+                    onChange={(e) => setApplicationData(prev => ({ ...prev, email: e.target.value }))}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-blue-400"
+                    placeholder="Enter your email address"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="phone" className="text-white/90 mb-2 block">
+                    <Phone className="inline mr-2 h-4 w-4" />
+                    Phone Number
+                  </Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={applicationData.phone}
+                    onChange={(e) => setApplicationData(prev => ({ ...prev, phone: e.target.value }))}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-blue-400"
+                    placeholder="Enter your phone number"
+                  />
+                </div>
+              </div>
+
+              {/* Cover Letter */}
+              <div>
+                <Label htmlFor="coverLetter" className="text-white/90 mb-2 block">
+                  <FileText className="inline mr-2 h-4 w-4" />
+                  Cover Letter *
+                </Label>
+                <Textarea
+                  id="coverLetter"
+                  required
+                  value={applicationData.coverLetter}
+                  onChange={(e) => setApplicationData(prev => ({ ...prev, coverLetter: e.target.value }))}
+                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-blue-400 min-h-[120px]"
+                  placeholder="Tell us why you're interested in this position and what makes you a great fit..."
+                />
+              </div>
+
+              {/* Resume Upload */}
+              <div>
+                <Label htmlFor="resume" className="text-white/90 mb-2 block">
+                  <Upload className="inline mr-2 h-4 w-4" />
+                  Resume/CV *
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="resume"
+                    type="file"
+                    required
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleFileUpload}
+                    className="bg-white/10 border-white/20 text-white file:bg-blue-500/20 file:text-blue-300 file:border-0 file:rounded file:px-3 file:py-1 file:mr-3 hover:file:bg-blue-500/30"
+                  />
+                  {applicationData.resume && (
+                    <p className="text-green-400 text-sm mt-2">
+                      ✓ {applicationData.resume.name} selected
+                    </p>
+                  )}
+                </div>
+                <p className="text-white/60 text-sm mt-1">
+                  Accepted formats: PDF, DOC, DOCX (Max 5MB)
+                </p>
+              </div>
+
+              {/* Submit Button */}
+              <DialogFooter className="mt-8">
+                <Button 
+                  type="button"
+                  variant="outline" 
+                  onClick={() => setIsApplicationOpen(false)}
+                  className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit"
+                  className={`${selectedJob ? getColorClasses(selectedJob.color).button : 'bg-blue-500 hover:bg-blue-600'} text-white px-8 font-semibold`}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="mr-2 h-4 w-4" />
+                      Submit Application
+                    </>
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
       </Dialog>
 
       {/* Footer - keeping existing code */}

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
+import Image from 'next/image'
 
 export default function ThankYouPage() {
   return (
@@ -27,16 +28,13 @@ export default function ThankYouPage() {
           {/* Enhanced 3D Logo */}
           <Link href="/" className="flex items-center space-x-3 group">
             <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-purple-500 to-orange-500 rounded-xl flex items-center justify-center transform transition-all duration-700 group-hover:scale-110 group-hover:rotate-6 shadow-2xl shadow-blue-500/30 relative overflow-hidden">
-                <span className="text-white font-bold text-xl relative z-10">P</span>
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-400 via-purple-400 to-orange-400 rounded-xl blur-lg opacity-60 -z-10 group-hover:opacity-90 transition-opacity duration-700"></div>
-                <div className="absolute inset-0 bg-white/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-
-                {/* Animated orbital rings */}
-                <div className="absolute inset-0 border border-blue-400/30 rounded-xl animate-spin-slow"></div>
-                <div className="absolute inset-1 border border-purple-400/20 rounded-lg animate-spin-slower"></div>
-              </div>
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-orange-400 to-red-500 rounded-full animate-pulse shadow-lg"></div>
+              <Image
+                src="/your-logo.png"
+                alt="PitchX Logo"
+                width={48}
+                height={48}
+                className="transform transition-all duration-700 group-hover:scale-110 group-hover:rotate-6 shadow-2xl shadow-blue-500/30"
+              />
             </div>
             <span className="text-2xl font-bold bg-gradient-to-r from-gray-800 via-blue-600 to-purple-600 bg-clip-text text-transparent">
               PitchX

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from 'next/image'
 import {
   CheckCircle,
@@ -44,6 +44,80 @@ import Link from "next/link"
 export default function PitchXLanding() {
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    // Enhanced scroll reveal functionality for features and steps
+    function initScrollReveal() {
+      const steps = document.querySelectorAll('.step-reveal');
+      const features = document.querySelectorAll('.feature-reveal');
+      const scrollReveals = document.querySelectorAll('.scroll-reveal');
+      
+      const observerOptions = {
+        threshold: 0.2,
+        rootMargin: '-50px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const element = entry.target;
+            const stepNumber = element.getAttribute('data-step') || element.getAttribute('data-feature');
+            
+            // Add reveal animation with faster delay based on step/feature
+            setTimeout(() => {
+              element.classList.remove('opacity-0', 'translate-y-20');
+              element.classList.add('opacity-100', 'translate-y-0');
+              
+              // Add special bounce effect for icons
+              const icon = element.querySelector('.group');
+              if (icon) {
+                icon.classList.add('animate-bounce');
+                setTimeout(() => {
+                  icon.classList.remove('animate-bounce');
+                }, 500);
+              }
+            }, stepNumber ? (stepNumber - 1) * 100 : 0);
+            
+            observer.unobserve(element);
+          }
+        });
+      }, observerOptions);
+
+      // Check if elements are already in viewport and reveal them immediately
+      const allElements = [...steps, ...features, ...scrollReveals];
+      allElements.forEach(element => {
+        const rect = element.getBoundingClientRect();
+        const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (isInViewport) {
+          // Immediately show elements that are already visible
+          element.classList.remove('opacity-0', 'translate-y-20');
+          element.classList.add('opacity-100', 'translate-y-0');
+        } else {
+          // Observe elements that are not yet visible
+          observer.observe(element);
+        }
+      });
+    }
+
+    // Initialize scroll reveal
+    initScrollReveal();
+
+    // Re-initialize when navigating back to the page
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        // Page was loaded from cache (back/forward navigation)
+        setTimeout(initScrollReveal, 100);
+      }
+    };
+
+    window.addEventListener('pageshow', handlePageShow);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('pageshow', handlePageShow);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-black overflow-hidden relative">
@@ -105,7 +179,7 @@ export default function PitchXLanding() {
                 { href: "#features", label: "Features", color: "blue", isExternal: false },
                 { href: "/about-us", label: "About Us", color: "purple", isExternal: false },
                 { href: "#video-cv", label: "Video CV", color: "orange", isExternal: false },
-                { href: "#jobs", label: "Jobs/Career", color: "green", isExternal: false },
+                { href: "/careers", label: "Jobs/Career", color: "green", isExternal: false },
               ].map((item, index) => {
                 // For internal page navigation, use Link component
                 if (item.href.startsWith('/')) {
@@ -244,13 +318,13 @@ export default function PitchXLanding() {
                 >
                   Video CV
                 </a>
-                <a 
-                  href="#jobs" 
+                <Link 
+                  href="/careers" 
                   onClick={() => setMobileMenuOpen(false)}
                   className="block text-xl text-white/80 hover:text-white transition-colors duration-300 py-3 border-b border-white/10"
                 >
                   Jobs/Career
-                </a>
+                </Link>
               </div>
             </nav>
             
@@ -1474,61 +1548,7 @@ export default function PitchXLanding() {
         </div>
       )}
 
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-          // Enhanced scroll reveal functionality for features and steps
-          function initScrollReveal() {
-            const steps = document.querySelectorAll('.step-reveal');
-            const features = document.querySelectorAll('.feature-reveal');
-            const scrollReveals = document.querySelectorAll('.scroll-reveal');
-            
-            const observerOptions = {
-              threshold: 0.2,
-              rootMargin: '-50px 0px -50px 0px'
-            };
 
-            const observer = new IntersectionObserver((entries) => {
-              entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                  const element = entry.target;
-                  const stepNumber = element.getAttribute('data-step') || element.getAttribute('data-feature');
-                  
-                  // Add reveal animation with faster delay based on step/feature
-                  setTimeout(() => {
-                    element.classList.remove('opacity-0', 'translate-y-20');
-                    element.classList.add('opacity-100', 'translate-y-0');
-                    
-                    // Add special bounce effect for icons
-                    const icon = element.querySelector('.group');
-                    if (icon) {
-                      icon.classList.add('animate-bounce');
-                      setTimeout(() => {
-                        icon.classList.remove('animate-bounce');
-                      }, 500);
-                    }
-                  }, stepNumber ? (stepNumber - 1) * 100 : 0); // Changed from 300ms to 100ms
-                  
-                  observer.unobserve(element);
-                }
-              });
-            }, observerOptions);
-
-            // Observe all elements
-            [...steps, ...features, ...scrollReveals].forEach(element => {
-              observer.observe(element);
-            });
-          }
-
-          // Initialize when DOM is loaded
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initScrollReveal);
-          } else {
-            initScrollReveal();
-          }
-        `,
-        }}
-      />
     </div>
   )
 }

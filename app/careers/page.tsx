@@ -240,14 +240,42 @@ export default function CareersPage() {
     setIsSubmitting(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Here you would typically send the data to your backend
-      console.log('Application submitted:', {
-        job: selectedJob?.title,
-        ...applicationData
+      // Convert resume file to base64 if it exists
+      let resumeBase64 = null;
+      if (applicationData.resume) {
+        const buffer = await applicationData.resume.arrayBuffer();
+        resumeBase64 = Buffer.from(buffer).toString('base64');
+      }
+
+      // Prepare the data
+      const submissionData = {
+        jobTitle: selectedJob?.title,
+        department: selectedJob?.department,
+        fullName: applicationData.fullName,
+        email: applicationData.email,
+        phone: applicationData.phone,
+        coverLetter: applicationData.coverLetter,
+        resume: resumeBase64 ? {
+          name: applicationData.resume?.name,
+          type: applicationData.resume?.type,
+          data: resumeBase64
+        } : null
+      };
+
+      // Submit to our API endpoint
+      const response = await fetch('/api/submit-application', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData),
       });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to submit application');
+      }
       
       setSubmitSuccess(true);
       
@@ -266,6 +294,7 @@ export default function CareersPage() {
       }, 2000);
     } catch (error) {
       console.error('Error submitting application:', error);
+      alert('Failed to submit application. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
